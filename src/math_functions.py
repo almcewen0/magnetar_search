@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
-from search_convenience_functions import *
+from convenience_functions import *
 from astropy.io import fits
 from astropy.table import Table
 

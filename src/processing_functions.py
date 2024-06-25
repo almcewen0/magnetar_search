@@ -3,8 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from astropy import units as u
 from astropy.io import fits
-from search_convenience_functions import *
-from search_math_functions import king_fit, king_dc
+from convenience_functions import *
+from math_functions import king_fit, king_dc
 from lmfit import create_params, minimize
 
 
