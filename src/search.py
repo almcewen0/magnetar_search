@@ -3,11 +3,11 @@ import datetime
 import time
 import os
 import argparse
-from search_convenience_functions import *
-from search_catalog_functions import *
-from search_math_functions import *
-from search_config import config
-from search_processing_functions import *
+from convenience_functions import *
+from catalog_functions import *
+from math_functions import *
+from config import config
+from processing_functions import *
 from astropy import units as u
 from astropy.io import fits
 from glob import glob

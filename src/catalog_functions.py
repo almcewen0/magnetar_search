@@ -1,8 +1,8 @@
-from search_config import config
+from config import config
 from astropy.table import Table
 from astropy.coordinates import SkyCoord
 from astropy import units as u
-from search_convenience_functions import *
+from convenience_functions import *
 import numpy as np
 
 
