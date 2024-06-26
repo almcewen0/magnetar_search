@@ -24,9 +24,8 @@ def read_catalog(c_cut):
 
     cf = config()
     cat = Table.read(cf.catalog_file)
-    s_cat = SkyCoord(np.array(cat['LII'])*u.deg, np.array(cat['BII'])*u.deg,frame='galactic')
     
-    b_cut = 5*u.deg
+    b_cut = 5
     
     
     # abridged version has the following changes:
@@ -39,7 +38,7 @@ def read_catalog(c_cut):
  
     
     cat.add_column(cat['MJD_STOP'] - cat['MJD_START'],name='TOBS')
-    abr_cnd = np.array(abs(s_cat.b.to('deg')) <= b_cut) \
+    abr_cnd = np.array(abs(cat['BII']) <= b_cut) \
             & np.array(~cat['PN_8_CTS'].mask) \
             & np.array((cat['PN_8_CTS'] >= c_cut).data) \
             & np.array(cat['PN_SUBMODE'] != 'PrimeSmallWindow') \
