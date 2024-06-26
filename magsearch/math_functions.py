@@ -21,7 +21,8 @@ def do_period_search(timFile,
                      srcName,
                      oid,
                      write_file_bn,
-                     freqs = None,
+                     minP,
+                     maxP,
                      verbose=False,
                      overwrite=False,
                      logfile=None,ts=None):
@@ -34,7 +35,8 @@ def do_period_search(timFile,
     timFile         [str] : event file
     srcName         [str] : source name
     oid             [str] : (o)bservation (i)d (d)irectory
-    freqs      [np.array] : frequencies for period search
+    minP          [float] : minimum period for search
+    maxP          [float] : maximum period for search
     write_file_bn   [str] : basename for both .txt and .png result files
     verbose        [bool] : flag to print text to stdout as well as file (for reporting)
     overwrite      [bool] : flag to overwrite previous period search results
@@ -54,8 +56,7 @@ def do_period_search(timFile,
         report(f"error reading .fit data ({timFile})",verbose=verbose,logfile=logfile)
         return
 
-    if freqs is None:
-        freqs = np.arange(1/20,2,np.max([1/exposure,5e-5]))
+    freqs = np.arange(1/maxP,1/minP,np.max([1/exposure,5e-5]))
     ls = list(mpl.lines.lineStyles.keys())[1:]
     colors = list(mpl.colors.XKCD_COLORS.keys())
 
