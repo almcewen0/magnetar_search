@@ -36,26 +36,28 @@ def do_period_search(timFile,
     oid             [str] : (o)bservation (i)d (d)irectory
     freqs      [np.array] : frequencies for period search
     write_file_bn   [str] : basename for both .txt and .png result files
-    verbose        [bool] : flag to print text to stdout as well as file
+    verbose        [bool] : flag to print text to stdout as well as file (for reporting)
     overwrite      [bool] : flag to overwrite previous period search results
-    logfile   [open file] : open file to write out commands
+    logfile   [open file] : open file to write out commands (for reporting)
     ts            [float] : pipeline start time (for reporting)
 
     """
 
-    if freqs is None:
-        freqs = np.logspace(np.log10(1/20),0,10000)
-    ls = list(mpl.lines.lineStyles.keys())[1:]
-    colors = list(mpl.colors.XKCD_COLORS.keys())
 
     try:
         with fits.open(timFile) as hdulist:
             times = np.array(hdulist[1].data)['TIME']
             exposure = hdulist[0].header['DURATION']
+            objname = hdulist[0].header['OBJECT']
 
     except:
         report(f"error reading .fit data ({timFile})",verbose=verbose,logfile=logfile)
         return
+
+    if freqs is None:
+        freqs = np.arange(1/20,2,np.max([1/exposure,5e-5]))
+    ls = list(mpl.lines.lineStyles.keys())[1:]
+    colors = list(mpl.colors.XKCD_COLORS.keys())
 
     statfile = os.path.join(oid,srcName,f'period_search_statistics_{srcName}.txt')
     if os.path.isfile(statfile) and not overwrite:
@@ -72,19 +74,22 @@ def do_period_search(timFile,
                                format='ascii',
                                overwrite=overwrite)
 
-    prob = np.exp(-0.4*hPow)
+    #prob = np.exp(-0.4*hPow)
     # these assume Gaussian noise, should be fine for sources with >200 cts.
-    indFreq = (freqs.max()-freqs.min())*exposure
-    Pval_3sig = 1-0.997300203936740
-    Pval_3sigcorr = Pval_3sig/indFreq
-    hcrit = -np.log(Pval_3sigcorr)/0.4
+    #indFreq = (freqs.max()-freqs.min())*exposure
+    #Pval_3sig = 1-0.997300203936740
+    #Pval_3sigcorr = Pval_3sig/indFreq
+    #hcrit = -np.log(Pval_3sigcorr)/0.4
+
+    hcrit = 47.  # measured from CDF = 0.999999
 
     r_str = f"saving plot to {write_file_bn}.png\n" + \
             f"writing results to {write_file_bn}.txt"
     report(r_str,verbose=verbose,logfile=logfile)
+    fig = plt.figure()
     plt.plot(freqs,hPow,color='grey',alpha=0.5)
-    plt.plot(freqs[prob < Pval_3sigcorr],
-             hPow[prob < Pval_3sigcorr],
+    plt.plot(freqs[hPow > hcrit], #freqs[prob < Pval_3sigcorr],
+             hPow[hPow > hcrit],  #hPow[prob < Pval_3sigcorr],
              lw=0,
              marker='*',
              color='red',
@@ -92,24 +97,26 @@ def do_period_search(timFile,
     tmp = open(f"{write_file_bn}.txt",'w')
     full_cand_list = open(os.path.join(oid,'results','cands.txt'),'a')
     tmp.write(f"# Candidate information from period search for Candidate {srcName}, " + \
-              f"{timFile.split('/')[-1].split('tim')[-1].split('.')[0]}\n")
+              f"{timFile.split('/')[-1].split('tim')[-1].split('.')[0]}\nfrequency hpower")
 
     cand_inds = []
     detection = False
-    for index in np.where(prob < Pval_3sigcorr)[0]:
-        cand_inds.append(index)
-        tmp.write(f"Cand{len(cand_inds)}: {freqs[index]} Hz, p(noise)={prob[index]:2.2e}\n")
-        full_cand_list.write(f"{srcName} {freqs[index]} {prob[index]} {timFile}\n")
-        report(f"Cand{len(cand_inds)}: {freqs[index]:2.3f} Hz, p(noise) = {prob[index]:2.2e}",
-               verbose=verbose,logfile=logfile)
-        detection = True
+    #for i in range(len(prob)):
+    for i in range(len(hPow)):
+        if hPow[i] > hcrit: #Pval_3sigcorr:
+            cand_inds.append(i)
+            full_cand_list.write(f"{srcName} {freqs[i]} {hPow[i]} {timFile}\n")
+            report(f"Cand{len(cand_inds)}: {freqs[i]:2.3f} Hz, hPow = {hPow[i]:2.2e}",
+                   verbose=verbose,logfile=logfile)
+            detection = True
+        tmp.write(f"{freqs[i]} {hPow[i]}\n")
 
     plt.xlabel('Frequency [Hz]')
     plt.ylabel('H power')
     plt.xscale('log')
     #plt.yscale('log')
     plt.legend(fontsize=6)
-    plt.title(timFile.split('/')[-1])
+    plt.title(f"{timFile.split('/')[-1]}\nObject: {objname}")
     plt.grid()
     plt.savefig(f"{write_file_bn}.png")
     if len(cand_inds) > 0:

@@ -14,6 +14,9 @@ from glob import glob
 
 
 def main():
+
+    cf = config()
+
     # columns extracted from full catalog
     cols = [
         'OBS_ID',        'IAUNAME',       'RA',            'DEC',           
@@ -32,46 +35,40 @@ def main():
     parser.add_argument("-minP",
                         "--minimumPeriod",
                          help="Minimum candidate period to include in search, " + \
-                              "default = 1 s",
-                        default=1.0,
+                             f"default = {cf.defaults['minimumPeriod']} s",
+                        default=cf.defaults['minimumPeriod'],
                         type=float)
     parser.add_argument("-maxP",
                         "--maximumPeriod",
                          help="Maximum candidate period to include in search, " + \
-                              "default = 20 s",
-                        default=20.0,
-                        type=float)
-    parser.add_argument("-nPs",
-                        "--numberPeriods",
-                         help="Number of candidate periods between minP and maxP to search, " + \
-                              "default is 10000",
-                        default=10000,
+                             f"default = {cf.defaults['maximumPeriod']} s",
+                        default=cf.defaults['maximumPeriod'],
                         type=float)
     parser.add_argument("-sn",
                         "--SNcutoff",
                          help="Minimum source S/N to be searched, " + \
-                              "default is to only search the highest S/N band.",
-                        default=0.0,
+                             f"default is {cf.defaults['SNcutoff']}.",
+                        default=cf.defaults['SNcutoff'],
                         type=float)
     parser.add_argument("-cc",
                         "--Countscutoff",
                          help='Minimum number of counts in 4XMM catalog for a source to be included, ' + \
-                              'default is 200',
+                             f'default is {cf.defaults["Countscutoff"]}',
                         type=float,
-                        default=200)
+                        default=cf.defaults["Countscutoff"])
     parser.add_argument("-v",
                         "--verbose",
                          help="Flag to print out information to stdout, " + \
-                              "default is False",
+                             f"default is {cf.defaults['verbose']}",
                         type=bool,
-                        default=False,
+                        default=cf.defaults['verbose'],
                         action=argparse.BooleanOptionalAction)
     parser.add_argument("-ow",
                         "--overwrite",
                          help="Overwrite previous run's data, " + \
-                              "default is False",
+                             f"default is {cf.defaults['overwrite']}",
                         type=bool,
-                        default=False,
+                        default=cf.defaults['overwrite'],
                         action=argparse.BooleanOptionalAction)
     parser.add_argument("-hd",
                         "--headdirectory",
@@ -81,8 +78,9 @@ def main():
                         type=str)
     parser.add_argument("-rm",
                         "--cleanup",
-                        help="Flag to delete data files after processing completes, default is False",
-                        default=False,
+                        help="Flag to delete data files after processing completes, " + \
+                            f"default is {cf.defaults['cleanup']}",
+                        default=cf.defaults['cleanup'],
                         type=bool,
                         action=argparse.BooleanOptionalAction)
 
@@ -100,10 +98,9 @@ def main():
     c_cut     = args.Countscutoff
     verbose   = args.verbose
     overwrite = args.overwrite
-    cleanup = args.cleanup    
+    cleanup   = args.cleanup    
 
     tD = datetime.datetime.now()
-    cf = config()
     cat,cat_abr = read_catalog(c_cut) 
     
     if verbose:
