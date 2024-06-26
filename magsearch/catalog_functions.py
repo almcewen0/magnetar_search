@@ -1,6 +1,5 @@
 from config import config
 from astropy.table import Table
-from astropy.coordinates import SkyCoord
 from astropy import units as u
 from convenience_functions import *
 import numpy as np
