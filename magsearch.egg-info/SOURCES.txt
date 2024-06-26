@@ -1,0 +1,12 @@
+pyproject.toml
+magsearch/__init__.py
+magsearch/catalog_functions.py
+magsearch/config.py
+magsearch/convenience_functions.py
+magsearch/math_functions.py
+magsearch/processing_functions.py
+magsearch/search.py
+magsearch.egg-info/PKG-INFO
+magsearch.egg-info/SOURCES.txt
+magsearch.egg-info/dependency_links.txt
+magsearch.egg-info/top_level.txt
