@@ -10,7 +10,18 @@ import numpy as np
 def read_catalog(c_cut):
     """
     Read in the catalog and make cuts as described below.
+    
+    inputs
+    ======
+    c_cut [int]   : cutoff applied to the number of counts from a candidate source. 
+
+    returns
+    =======
+    cat, cat_abr [astropy.table.Table] : full and abridged (i.e. with cuts applied) catalogs
+
     """
+
+
     cf = config()
     cat = Table.read(cf.catalog_file)
     s_cat = SkyCoord(np.array(cat['LII'])*u.deg, np.array(cat['BII'])*u.deg,frame='galactic')
@@ -41,6 +52,16 @@ def add_SN_columns(subcat):
     """
     Function to calculate S/N for different combinations of bands in 4XMM.
     Calculates S/N for each band individually, then (optionally) steps through each *contiguous* combination.
+
+    inputs
+    ======
+    subcat [astropy.Table] : line/lines of catalog for which we would like to calculate S/N in each band
+
+    returns
+    ======= 
+    subcat  [astropy.table.Table] : table with columns added
+    colnames  [numpy.array] : array of columns in table
+
     """
     bands = [1,2,3,4,5,8]
     if 'SN_1' not in subcat.columns:
@@ -52,6 +73,19 @@ def add_SN_columns(subcat):
     return subcat,colnames
 
 def calc_joint_sn(rates,rate_errs,tobs):
+    """
+    Calculate the S/N of signal in a single band, or in the sum of a few bands.
+
+    inputs
+    ======
+    rates     [numpy.array] : count rate/rates for a band/bands (cts/s)
+    rate_errs [numpy.array] : uncertainty in rate/rates for given band/bands (cts/s)
+    tobs      [numpy.array] : duration of observation (s)
+
+    returns 
+    =======
+    [numpy.array] : array of S/N in all bands.
+    """
     if len(np.shape(rates)) > 1:
         return np.sum(np.array(rates)*np.sqrt(tobs),axis=0)/np.sqrt(np.sum(np.array(rate_errs)),axis=0)
     else:
@@ -62,6 +96,15 @@ def optimal_bands(ln):
     Function that utilizes combine_factors() to return the best energy ranges for the search. This will (hopefully)
     optimize the H power of a periodic signal in the data.
     EDIT 041724: No longer utilizes combine_factors, and just uses band with highest S/N.
+
+    inputs
+    ======
+    ln   [numpy.array, astropy.Table.Row] : line from catalog with count information
+
+    returns
+    =======
+    [list] : bands (in keV) of the optimal bands for searching based on S/N of detection.
+
     """
 
     joint_bands = np.array(["1","2","3","4","5",'1-2','2-3','3-4','4-5',
