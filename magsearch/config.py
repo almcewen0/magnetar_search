@@ -9,5 +9,6 @@ class config():
             'Countscutoff'  : 200,
             'verbose'       : True,
             'overwrite'     : False,
-            'cleanup'       : False
+            'cleanup'       : False,
+            'SNcutoff'      : 0.0
         }

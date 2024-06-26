@@ -47,8 +47,8 @@ def main():
     parser.add_argument("-sn",
                         "--SNcutoff",
                          help="Minimum source S/N to be searched, " + \
-                              "default is to only search the highest S/N band.",
-                        default=0.0,
+                             f"default is {cf.defaults['SNcutoff']}.",
+                        default=cf.defaults['SNcutoff'],
                         type=float)
     parser.add_argument("-cc",
                         "--Countscutoff",
@@ -78,8 +78,9 @@ def main():
                         type=str)
     parser.add_argument("-rm",
                         "--cleanup",
-                        help="Flag to delete data files after processing completes, default is False",
-                        default=False,
+                        help="Flag to delete data files after processing completes, " + \
+                            f"default is {cf.defaults['cleanup']}",
+                        default=cf.defaults['cleanup'],
                         type=bool,
                         action=argparse.BooleanOptionalAction)
 
@@ -97,7 +98,7 @@ def main():
     c_cut     = args.Countscutoff
     verbose   = args.verbose
     overwrite = args.overwrite
-    cleanup = args.cleanup    
+    cleanup   = args.cleanup    
 
     tD = datetime.datetime.now()
     cat,cat_abr = read_catalog(c_cut) 
