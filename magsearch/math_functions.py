@@ -122,7 +122,7 @@ def do_period_search(timFile,
     plt.savefig(f"{write_file_bn}.png")
     if len(cand_inds) > 0:
         cp(f"{write_file_bn}.png",os.path.join(oid,'results'),verbose=verbose,logfile=logfile)
-    plt.clf()
+    plt.close()
     tmp.close()
     full_cand_list.close()
     return detection
