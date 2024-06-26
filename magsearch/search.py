@@ -88,9 +88,8 @@ def main():
     ids       = np.loadtxt(args.idfile,dtype=str)
     if np.shape(ids) == ():
         ids = [ids.tolist()]
-    search_frequencies = np.logspace(np.log10(1/args.maximumPeriod),
-                                     np.log10(1/args.minimumPeriod),
-                                     args.numberPeriods)
+    minP = args.minimumPeriod
+    maxP = args.maximumPeriod
     head_dir  = args.headdirectory
     if head_dir == '':
         head_dir = os.getcwd()
@@ -266,7 +265,8 @@ def main():
                 sources_detected = do_period_search(timFile,
                                                     srcName,
                                                     oid,
-                                                    freqs=search_frequencies,
+                                                    minP=minP,
+                                                    maxP=maxP,
                                                     write_file_bn=f"{timFile.rstrip('.fit')}",
                                                     verbose=verbose,
                                                     overwrite=True,

@@ -116,7 +116,7 @@ def getXMMData(obsID,srd,oid,verbose=False,logfile=None,ts=None):
 
     # Defining the SAS_ODF env variables
     os.putenv("SAS_ODF", oid + "/odf/" + odfSAS[0])
-    report(f"SAS_ODF = {oid}+/odf/{odfSAS[0]}",verbose=verbose,logfile=logfile)
+    report(f"SAS_ODF = {oid}/odf/{odfSAS[0]}",verbose=verbose,logfile=logfile)
 
     # Running epchain
     command = f'epchain '
@@ -176,9 +176,9 @@ def corrFlBackPN(evtFilePN,obsID,verbose=False,logfile=None,ts=None):
 ###############################################
 def crtImPN(evtFilePN,obsID,verbose=False,band_ints=None,tag=None,logfile=None,ts=None):
 
-    r_str =  ' -------------------------------------------------------- \n' + \
+    r_str =  ' ------------------------------------------------------------------------------- \n' + \
             f" Creating EPIC-PN band images for event file {evtFilePN.split('/')[-1]}\n" + \
-             ' --------------------------------------------------------'
+             ' -------------------------------------------------------------------------------'
     report(r_str,verbose=verbose,logfile=logfile,ts=ts)
 
     if band_ints is None:
@@ -258,9 +258,9 @@ def crtRegPN(imFilePN,pnEvtFile,attFile,obsID,srcName,ra,dec,extent,oid,cat,
         ################################################
         ################################################
 
-        r_str =  ' ----------------------------------------- \n' + \
+        r_str =  ' ------------------------------------------------- \n' + \
                 f' Creating radial profile for {srcName} \n' + \
-                 ' ----------------------------------------- '
+                 ' ------------------------------------------------- '
         report(r_str,verbose=verbose,logfile=logfile)
 
         if '_'+band_suffix == ints_to_imFilSuffix("8"):
