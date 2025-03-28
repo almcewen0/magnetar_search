@@ -82,7 +82,8 @@ def do_period_search(timFile,
     #Pval_3sigcorr = Pval_3sig/indFreq
     #hcrit = -np.log(Pval_3sigcorr)/0.4
 
-    hcrit = 47.  # measured from CDF = 0.999999
+    #hcrit = 47.  # measured from CDF = 0.999999
+    hcrit = 30.
 
     r_str = f"saving plot to {write_file_bn}.png\n" + \
             f"writing results to {write_file_bn}.txt"
