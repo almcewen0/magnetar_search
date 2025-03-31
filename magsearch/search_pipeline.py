@@ -40,14 +40,6 @@ def main():
                               "default = 20 s",
                         default=20.0,
                         type=float)
-    """
-    parser.add_argument("-nPs",
-                        "--numberPeriods",
-                         help="Number of candidate periods between minP and maxP to search, " + \
-                              "default is 10000",
-                        default=10000,
-                        type=float)
-    """
     parser.add_argument("-sn",
                         "--SNcutoff",
                          help="Minimum source S/N to be searched, " + \
