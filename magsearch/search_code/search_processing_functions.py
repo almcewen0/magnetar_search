@@ -64,7 +64,10 @@ def getXMMData(obsID,srd,oid,verbose=False,logfile=None,ts=None):
         report(r_str,verbose=verbose,logfile=logfile,ts=ts)
         
         path = f'"https://nxsa.esac.esa.int/nxsa-sl/servlet/data-action-aio?obsno={obsID}&level=ODF&instname=PN"'
-        command = f'curl -o files_{obsID}.tar {path}'
+        if verbose:
+            command = f'curl -o files_{obsID}.tar {path}'
+        else:
+            command = f'curl -s -o files_{obsID}.tar {path}'    
         execute(command,verbose=verbose,logfile=logfile)
 
 
